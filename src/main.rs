@@ -2,13 +2,16 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 struct Args {
-    // Date
+    // Date to convert
     #[arg(short, long)]
     date: String,
+    // Unit (seconds or milliseconds)
+    #[arg(short, long, default_value = "s")]
+    unit: String,
 }
 
 /// Convert date string to Unix epoch
-fn unix_converter(date: String) -> Result<u64, String> {
+fn unix_converter(date: &str, unit: &str) -> Result<u64, String> {
     let split_date: Vec<_> = date.split("-").collect();
     if split_date.len() != 3 {
         return Err("Date format must match: YYYY-MM-DD".to_string());
@@ -34,7 +37,14 @@ fn unix_converter(date: String) -> Result<u64, String> {
         return Err(format!("Day must be within 1 and {days_in_month}."));
     }
 
-    let timestamp = calculate_epoch(year, month, day)?;
+    let mut timestamp = calculate_epoch(year, month, day)?;
+
+    if unit == "ms" {
+        timestamp *= 1000;
+    }
+    if !["s", "ms"].contains(&unit) {
+        return Err("Unit not in `s` or `ms`.".to_string());
+    }
 
     Ok(timestamp)
 }
@@ -91,9 +101,8 @@ fn day_of_year(year: u64, month: u64, day: u64) -> u64 {
 
 fn main() {
     let args = Args::parse();
-    println!("{}", args.date);
-    match unix_converter(args.date) {
-        Ok(timestamp) => println!("Epoch Timestamp: {timestamp}"),
+    match unix_converter(&args.date, &args.unit) {
+        Ok(timestamp) => println!("Date: {} -> Epoch: {timestamp}", args.date),
         Err(e) => eprintln!("Error: {e}"),
     }
 }
