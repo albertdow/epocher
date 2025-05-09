@@ -15,7 +15,7 @@ a nice little CLI. It converts a date into an epoch timestamp.
 ## Usage
 
 ```bash
-cargo run src/main -- --date <YYYY-MM-DD>
+cargo run -- --date <YYYY-MM-DD>
 ```
 
 or equivalently (after building with `cargo build --release`)
