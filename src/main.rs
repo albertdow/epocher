@@ -102,7 +102,7 @@ fn day_of_year(year: u64, month: u64, day: u64) -> u64 {
 fn main() {
     let args = Args::parse();
     match unix_converter(&args.date, &args.unit) {
-        Ok(timestamp) => println!("{timestamp}"),
+        Ok(timestamp) => print!("{timestamp}"),
         Err(e) => eprintln!("Error: {e}"),
     }
 }
